@@ -35,12 +35,13 @@ class PhileRSSFeed extends \Phile\Plugin\AbstractPlugin implements \Phile\EventO
 				$this->config['pages'] = array();
 				// convert the pages into key => values and not an object
 				for ($i=0; $i < count($pages); $i++) {
+					$meta = $pages[$i]->getMeta();
 					$this->config['pages'][] = array(
 						'title' => $pages[$i]->getTitle(),
 						'url' => $pages[$i]->getUrl(),
 						'content' => $pages[$i]->getContent(),
-						'meta' => $pages[$i]->getMeta(),
-						'date' => $pages[$i]->getMeta()['date']
+						'meta' => $meta,
+						'date' => $meta['date']
 						);
 				}
 
