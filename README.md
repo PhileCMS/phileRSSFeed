@@ -3,11 +3,17 @@ phileRSSFeed
 
 Generate RSS feeds based on the posts in your [Phile](https://github.com/PhileCMS/Phile) site.
 
-### Installation
+
+### 1.1 Installation (composer)
+```
+php composer.phar require phile/rss-feed:*
+```
+
+### 1.2 Installation (Download)
 
 * Install the latest version of [Phile](https://github.com/PhileCMS/Phile)
-* Clone this repo into `plugins/phileRSSFeed`
-* add `$config['plugins']['phileRSSFeed'] = array('active' => true);` to your `config.php`
+* Clone this repo into `plugins/phile/rssFeed`
+* add `$config['plugins']['phile\\rssFeed'] = array('active' => true);` to your `config.php`
 * go to `/feed` on your site
 
 ### Usage

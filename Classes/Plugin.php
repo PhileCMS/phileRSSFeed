@@ -1,10 +1,14 @@
 <?php
+/**
+ * Plugin class
+ */
+namespace Phile\Plugin\Phile\RssFeed;
 
 /**
  * Phile RSS Feed Plugin
  * converted from https://github.com/gilbitron/Pico-RSS-Plugin
  */
-class PhileRSSFeed extends \Phile\Plugin\AbstractPlugin implements \Phile\EventObserverInterface {
+class Plugin extends \Phile\Plugin\AbstractPlugin implements \Phile\Gateway\EventObserverInterface {
 
 	private $config;
 
@@ -19,7 +23,7 @@ class PhileRSSFeed extends \Phile\Plugin\AbstractPlugin implements \Phile\EventO
 			extract($vars);
 		}
 		ob_start();
-		include \Phile\Utility::resolveFilePath("MOD:phileRSSFeed/".$filename);
+		include \Phile\Utility::resolveFilePath("MOD:phile/rssFeed/".$filename);
 		return ob_get_clean();
 	}
 
