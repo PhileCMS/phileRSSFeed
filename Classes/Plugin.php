@@ -3,6 +3,7 @@
  * Plugin class
  */
 namespace Phile\Plugin\Phile\RssFeed;
+use Phile\Model\Page;
 
 /**
  * Phile RSS Feed Plugin
@@ -39,11 +40,14 @@ class Plugin extends \Phile\Plugin\AbstractPlugin implements \Phile\Gateway\Even
 				$this->config['pages'] = array();
 				// convert the pages into key => values and not an object
 				for ($i=0; $i < count($pages); $i++) {
-					$meta = $pages[$i]->getMeta();
+					/** @var \Phile\Model\Page $page */
+					$page = $pages[$i];
+
+					$meta = $page->getMeta();
 					$this->config['pages'][] = array(
-						'title' => $pages[$i]->getTitle(),
-						'url' => $pages[$i]->getUrl(),
-						'content' => $pages[$i]->getContent(),
+						'title' => $page->getTitle(),
+						'url' => $page->getUrl(),
+						'content' => $page->getContent(),
 						'meta' => $meta,
 						'date' => $meta['date']
 						);
