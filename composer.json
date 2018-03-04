@@ -12,10 +12,16 @@
             "email": "james2doyle@gmail.com",
             "homepage": "http://ohdoylerules.com/",
             "role": "Developer"
+        },
+        {
+            "name": "Schlaefer",
+            "email": "openmail+sourcecode@siezi.com",
+            "homepage": "http://siezi.com/",
+            "role": "Developer"
         }
     ],
 	"require": {
-        "phile-cms/phile": ">=1",
-        "phile-cms/plugin-installer-plugin": ">=1"
+        "phile-cms/phile": "^1.9",
+        "phile-cms/plugin-installer-plugin": "^1.0"
 	}
 }

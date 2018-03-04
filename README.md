@@ -6,7 +6,7 @@ Generate RSS feeds based on the posts in your [Phile](https://github.com/PhileCM
 
 ### 1.1 Installation (composer)
 ```
-php composer.phar require phile/rss-feed:*
+composer require phile/rss-feed
 ```
 
 ### 1.2 Installation (Download)
