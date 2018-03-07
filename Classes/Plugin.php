@@ -24,41 +24,48 @@ class Plugin extends AbstractPlugin implements EventObserverInterface
             return;
         }
 
-        $templateVars = $this->settings;
-        $templateVars['pages'] = [] ;
+        $router = Container::getInstance()->get('Phile_Router');
+        $config = Container::getInstance()->get('Phile_Config');
 
+        $templateVars = $this->settings + $config->getTemplateVars();
+        $templateVars += [
+            'feed_url' => $router->urlForPage($feedUrl),
+            'pages' => $this->getPages()
+        ];
+
+        $content = $this->renderFile('templates/atom.php', $templateVars);
+
+        $response = (new \Phile\Core\Response)
+            ->createHtmlResponse($content)
+            ->withHeader('Content-Type', 'application/rss+xml; charset=utf-8');
+        $eventData['response'] = $response;
+    }
+
+    private function getPages(): array
+    {
         $pageRespository = new Repository();
-        $pages = $pageRespository->findAll();
+        $allPages = $pageRespository->findAll();
 
-        for ($i=0; $i < count($pages); $i++) {
-            /** @var \Phile\Model\Page $page */
-            $page = $pages[$i];
+        $pages = [];
+        foreach ($allPages as $page) {
             $meta = $page->getMeta();
-            $templateVars['pages'][] = array(
+            if (empty($meta[$this->settings['post_key']])) {
+                continue;
+            }
+            $pages[] = [
                 'title' => $page->getTitle(),
                 'url' => $page->getUrl(),
                 'content' => $page->getContent(),
-                'meta' => $meta,
-                'date' => $meta['date']
-                );
+                'date' => $meta->get('date'),
+                'meta' => $meta->getAll()
+            ];
         }
-
-        $config = Container::getInstance()->get('Phile_Config');
-        $templateVars += $config->getTemplateVars();
-
-        function buildSorter($key)
-        {
-            return function ($a, $b) use ($key) {
-                return strnatcmp($b[$key], $a[$key]);
-            };
-        }
-
-        usort($templateVars['pages'], buildSorter($this->settings['post_key']));
-        $content = $this->renderFile('template.php', $templateVars);
-
-        $response = (new \Phile\Core\Response)->createHtmlResponse($content)
-            ->withHeader('Content-Type', 'application/rss+xml; charset=utf-8');
-        $eventData['response'] = $response;
+        $sortKey = $this->settings['sort_key'];
+        $sorter = function ($a, $b) use ($sortKey) {
+            return strnatcmp($b[$sortKey], $a[$sortKey]);
+        };
+        usort($pages, $sorter);
+        return $pages;
     }
 
     /**
@@ -68,11 +75,9 @@ class Plugin extends AbstractPlugin implements EventObserverInterface
      * @param array $vars
      * @return string
      */
-    private function renderFile($filename, $vars = null)
+    private function renderFile(string $filename, array $vars = []): string
     {
-        if (is_array($vars) && !empty($vars)) {
-            extract($vars);
-        }
+        extract($vars);
         ob_start();
         include $this->getPluginPath($filename);
         return ob_get_clean();

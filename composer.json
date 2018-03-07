@@ -1,7 +1,6 @@
 {
 	"name": "phile/rss-feed",
 	"type": "phile-plugin",
-    "version": "1.0.0",
     "license": "MIT",
     "description": "Generate RSS feeds based on the posts in your Phile site.",
     "homepage": "http://philecms.com",
@@ -21,7 +20,7 @@
         }
     ],
 	"require": {
-        "phile-cms/phile": "^1.9",
+        "phile-cms/phile": "^1.10",
         "phile-cms/plugin-installer-plugin": "^1.0"
 	}
 }
