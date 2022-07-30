@@ -15,7 +15,17 @@ use Phile\Repository\Page as Repository;
  */
 class Plugin extends AbstractPlugin implements EventObserverInterface
 {
-    protected $events = ['request_uri' => 'createFeed'];
+    protected $templateVars;
+
+    protected $events = [
+        'config_loaded' => 'configLoaded',
+        'request_uri' => 'createFeed',
+    ];
+
+    public function configLoaded($config)
+    {
+        $this->templateVars = $config['class']->getTemplateVars();
+    }
 
     public function createFeed($eventData)
     {
@@ -25,9 +35,8 @@ class Plugin extends AbstractPlugin implements EventObserverInterface
         }
 
         $router = Container::getInstance()->get('Phile_Router');
-        $config = Container::getInstance()->get('Phile_Config');
 
-        $templateVars = $this->settings + $config->getTemplateVars();
+        $templateVars = $this->settings + $this->templateVars;
         $templateVars += [
             'feed_url' => $router->urlForPage($feedUrl),
             'pages' => $this->getPages()

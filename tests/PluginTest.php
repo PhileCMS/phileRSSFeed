@@ -21,7 +21,7 @@ class PluginTest extends TestCase
             ]
         ]);
 
-        $core = $this->createPhileCore(null, $config);
+        $core = $this->createPhileCore(null, $config)->bootstrap();
         $request = $this->createServerRequestFromArray(['REQUEST_URI' => '/url/feed.rss']);
         $response = $this->createPhileResponse($core, $request);
         $body = (string)$response->getBody();
@@ -30,7 +30,7 @@ class PluginTest extends TestCase
             '<?xml version="1.0" encoding="utf-8"?><rss version="2.0" xmlns:atom',
             $body
         );
-        $this->assertContains('<title>F6</title>', $body);
-        $this->assertContains('<description>81</description>', $body);
+        $this->assertStringContainsString('<title>F6</title>', $body);
+        $this->assertStringContainsString('<description>81</description>', $body);
     }
 }

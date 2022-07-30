@@ -1,0 +1,47 @@
+name: CI
+on:
+  push:
+    branches:
+    - master
+    - release/*
+    - develop
+    - feature/*
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.0', '8.1']
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Dependencies
+      run: composer install --no-progress
+    - name: Touch autoloader
+      run: touch vendor/phile-cms/phile/lib/vendor/autoload.php
+    - name: Create target directory for plugin
+      run: mkdir -p vendor/phile-cms/phile/plugins/phile/rssFeed
+    - name: Move plugin into composer installed phile directory
+      run: find . -maxdepth 1 ! -path ./vendor ! -path . -exec mv \{\} vendor/phile-cms/phile/plugins/phile/rssFeed \;
+    - name: Run phpunit
+      run: ./vendor/bin/phpunit -c vendor/phile-cms/phile/phpunit.xml vendor/phile-cms/phile/plugins/phile/rssFeed/tests
+
+  php_cs_fixer:
+    name: phpcs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Dependencies
+        run: composer install --no-progress
+      - name: Touch autoloader
+        run: touch vendor/phile-cms/phile/lib/vendor/autoload.php
+      - name: Create target directory for plugin
+        run: mkdir -p vendor/phile-cms/phile/plugins/phile/rssFeed
+      - name: Move plugin into composer installed phile directory
+        run: find . -maxdepth 1 ! -path ./vendor ! -path . -exec mv \{\} vendor/phile-cms/phile/plugins/phile/rssFeed \;
+      - name: Run phpcs  
+        run: vendor/bin/phpcs --standard=vendor/phile-cms/phile/phpcs.xml vendor/phile-cms/phile/plugins/phile/rssFeed/
